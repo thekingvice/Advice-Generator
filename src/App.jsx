@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [advice, setAdvice] = useState("");
+  const [adviceId, setAdviceID] = useState("");
+  const fetchNew = () => {
+    fetch("https://api.adviceslip.com/advice")
+      .then((response) => response.json())
+      .then((data) => {
+        setAdvice(data.slip.advice);
+        setAdviceID(data.slip.id);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetch("https://api.adviceslip.com/advice")
+      .then((response) => response.json())
+      .then((data) => {
+        setAdvice(data.slip.advice);
+        setAdviceID(data.slip.id);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <main>
+      <div className="App">
+        <h1>ADVICE #{adviceId}</h1>
+        <p>"{advice}"</p>
+        <img src="/pattern-divider-desktop.svg" alt="divider" />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+      <button onClick={fetchNew}>
+        <img src="/icon-dice.svg" alt="dice" />
+      </button>
+      <h2 className="floating">Click the button for more advice.</h2>
+    </main>
+  );
 }
 
-export default App
+export default App;
